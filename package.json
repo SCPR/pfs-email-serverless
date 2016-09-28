@@ -1,0 +1,25 @@
+{
+  "name": "pfs-email-serverless",
+  "version": "0.0.1",
+  "description": "Lambda method to send emails to pledge free stream users.",
+  "main": "handler.js",
+  "dependencies": {
+    "aws-sdk": "^2.6.5",
+    "js-yaml": "^3.6.1",
+    "mongodb": "^2.2.10",
+    "postmark": "^1.2.1",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "serverless-offline": "git+https://github.com/dherault/serverless-offline.git/#serverless_v1"
+  },
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "lambda",
+    "stream"
+  ],
+  "author": "Louise Yang",
+  "license": "ISC"
+}
