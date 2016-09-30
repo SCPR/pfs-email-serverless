@@ -6,9 +6,12 @@ const YAML = require('js-yaml');
 const AWS = require('aws-sdk');
 const mongodb = require('mongodb');
 const postmark = require('postmark');
+const moment = require('moment');
 
 let mailClient;
 let sentEmails = 0;
+const driveStart = 'kpccPlusDriveStart';
+const driveEnd = 'kpccPlusDriveEnd';
 const secretPath = './secrets';
 const kms = new AWS.KMS({region: 'us-west-2'});
 const encryptedSecret = fs.readFileSync(secretPath);
@@ -44,36 +47,13 @@ module.exports.sendEmails = () => {
     });
   })
     .then((db) => {
-      const collection = db.collection('PfsUser');
-      collection.find({emailSent: { $ne: true }}).toArray((err, results) => {
-        if (err) {
-          console.log(err);
-        }  else if (results.length) {
-          _.each(results, (result) => {
-            const sendIndividualEmailCallback = {
-              success: () => {
-                collection.updateOne(
-                  { "_id": result._id },
-                  {$set: { emailSent: true }}
-                );
-                handleResult();
-              },
-              error: (error) => {
-                console.log(error);
-                handleResult();
-              }
-            };
-            sendIndividualEmail(result, sendIndividualEmailCallback);
-          });
-          const handleResult = _.after(results.length, () => {
-            const elapsedTime = new Date().getTime() - startingTime;
-            console.log(`Attempted to send ${results.length} emails in ${elapsedTime}ms`);
-            console.log(`Successfully sent ${sentEmails} emails`);
-            db.close();
-          });
-        } else {
-          console.log('No users to email');
+      driveTimePromise(db).then((driveTime) => {
+        if (!driveTime) {
+          console.log('Not drive time. Not emailing anyone');
           db.close();
+          return;
+        } else {
+          findMembersToEmail(db);
         }
       });
     })
@@ -82,6 +62,59 @@ module.exports.sendEmails = () => {
     });
 };
 
+function findMembersToEmail(db) {
+  const collection = db.collection('PfsUser');
+  collection.find({emailSent: { $ne: true }}).toArray((err, results) => {
+    if (err) {
+      console.log(err);
+    }  else if (results.length) {
+      _.each(results, (result) => {
+        const sendIndividualEmailCallback = {
+          success: () => {
+            collection.updateOne(
+              { "_id": result._id },
+              {$set: { emailSent: true }}
+            );
+            handleResult();
+          },
+          error: (error) => {
+            console.log(error);
+            handleResult();
+          }
+        };
+        sendIndividualEmail(result, sendIndividualEmailCallback);
+      });
+      const handleResult = _.after(results.length, () => {
+        const elapsedTime = new Date().getTime() - startingTime;
+        console.log(`Attempted to send ${results.length} emails in ${elapsedTime}ms`);
+        console.log(`Successfully sent ${sentEmails} emails`);
+        db.close();
+      });
+    } else {
+      console.log('No users to email');
+      db.close();
+    }
+  });
+}
+
+function driveTimePromise(db) {
+  const collection = db.collection('iPhoneSettings');
+  let driveTime = false;
+  return new Promise((resolve, reject) => {
+    collection.find({settingName: {$in: [driveStart, driveEnd]}}).toArray((err, results) => {
+      let driveStartTimestamp, driveEndTimestamp;
+      _.each(results, (setting) => {
+        if (setting.settingName === driveStart) {
+          driveStartTimestamp = setting.settingValue;
+        } else if (setting.settingName == driveEnd) {
+          driveEndTimestamp = setting.settingValue;
+        }
+      });
+      resolve(driveStartTimestamp && driveEndTimestamp && moment(driveStartTimestamp).isBefore(startingTime)
+        && moment(driveEndTimestamp).isAfter(startingTime));
+    });
+  });
+}
 
 function sendIndividualEmail(userObject, callback) {
 
