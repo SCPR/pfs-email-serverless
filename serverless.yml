@@ -16,6 +16,8 @@ service: pfs-email-serverless
 provider:
   name: aws
   runtime: nodejs4.3
+  stage: dev
+  region: us-west-2
 
 # you can overwrite defaults here
 #  stage: dev
@@ -46,7 +48,8 @@ provider:
 
 functions:
   sendEmails:
-    handler: handler.sendEmails
+    name: sendEmails_${opt:stage, self:provider.stage}
+    handler: handler.sendEmails_${opt:stage, self:provider.stage}
 
 #    you can add any of the following events
 #    events:

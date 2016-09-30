@@ -8,7 +8,7 @@ const mongodb = require('mongodb');
 const postmark = require('postmark');
 const moment = require('moment');
 
-let mailClient;
+let mailClient, prod;
 let sentEmails = 0;
 const driveStart = 'kpccPlusDriveStart';
 const driveEnd = 'kpccPlusDriveEnd';
@@ -23,7 +23,18 @@ const kmsParams = {
 const emailSubject = 'Welcome to KPCC Plus!';
 const startingTime = new Date().getTime();
 
-module.exports.sendEmails = () => {
+module.exports.sendEmails_prod = () => {
+  prod = true;
+  sendEmails();
+};
+
+module.exports.sendEmails_dev = () => {
+  prod = false;
+  sendEmails();
+};
+
+function sendEmails() {
+  console.log(`Running sendEmails (in production? ${prod})`);
   new Promise((resolve, reject) => {
     kms.decrypt(kmsParams, (err, data) => {
       if (err) {
@@ -71,10 +82,12 @@ function findMembersToEmail(db) {
       _.each(results, (result) => {
         const sendIndividualEmailCallback = {
           success: () => {
-            collection.updateOne(
-              { "_id": result._id },
-              {$set: { emailSent: true }}
-            );
+            if (prod) {
+              collection.updateOne(
+                { "_id": result._id },
+                {$set: { emailSent: true }}
+              );
+            }
             handleResult();
           },
           error: (error) => {
@@ -123,12 +136,12 @@ or mobile device during our member drives - without any fundraising interruption
 KPCC Plus is easy to access. Click or paste this link to listen on your desktop or mobile web browser: 
 http://www.scpr.org/listen_live/pledge-free?pledgeToken=${userObject.pledgeToken}</p><p>You can also access 
 KPCC Plus directly through our iPhone App. Launch the app, and tap on KPCC Live in the orange navbar at the top of the 
-screen. Choose the KPCC Plus stream from the menu, and type this code:${userObject.pledgeToken}</p>
+screen. Choose the KPCC Plus stream from the menu, and type this code: ${userObject.pledgeToken}</p>
 <p>Thanks again for your generous support! Your contribution will go right back into the balanced coverage and inspiring
  stories you love.</p><p></br><br/>Sincerely, <br/>Rob Risko</p><p>P.S. Having trouble accessing KPCC Plus? Call us at
   626-583-5121 or visit our FAQ page: http://www.kpcc.org/plus</p>`;
 
-  const email = 'louise.yang@scpr.org'; // TODO: deploy to prod with: userObject.email;
+  const email = prod ? userObject.email : 'louise.yang@scpr.org';
   mailClient.sendEmail({
     To: email,
     From: 'Rob Risko <membership@kpcc.org>',
