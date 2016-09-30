@@ -26,3 +26,12 @@ The lambda runs every 3 minutes during drive time (manually enabled at the start
 By default, this will run in 'dev' mode, which will email scprdev@scpr.org instead of the user's real email. Dev mode will also *not* set that user's `emailSent` flag, which makes it easier to run the method again and send an email without having to manually reset that flag.
 
 During drive time, a developer will deploy the 'prod' mode of lambda and attach the 'sendPFSemails_trigger' CloudWatch rule to that lambda so that it will run every 3 minutes.
+
+## Debugging
+
+To quickly view the logs without having to play the 'click all links' game in the AWS console, you can run:
+
+`serverless logs --function sendEmails`
+
+Typically, if you are not seeing emails, either there are no users who have not been sent the email, or there is an IAM error and
+the lambda script can't decrypt any of the secrets or does not have the necessary permissions to read something.
