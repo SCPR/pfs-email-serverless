@@ -3,6 +3,10 @@
   "version": "0.0.1",
   "description": "Lambda method to send emails to pledge free stream users.",
   "main": "handler.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SCPR/pfs-email-serverless.git"
+  },
   "dependencies": {
     "aws-sdk": "^2.6.5",
     "js-yaml": "^3.6.1",
