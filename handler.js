@@ -50,7 +50,7 @@ function sendIndividualEmail(userObject, callback) {
 or mobile device during our member drives - without any fundraising interruptions.</p><p>The fundraising-free stream 
 KPCC Plus is easy to access. Click or paste this link to listen on your desktop or mobile web browser: 
 http://www.scpr.org/listen_live/pledge-free?pledgeToken=${userObject.pledgeToken}</p><p>You can also access 
-KPCC Plus directly through our iPhone App. Launch the app, and tap on KPCC Live in the orange navbar at the top of the 
+KPCC Plus directly through our iPhone and Android Apps. Launch the app, and tap on KPCC Live in the orange navbar at the top of the 
 screen. Choose the KPCC Plus stream from the menu, and type this code: ${userObject.pledgeToken}</p>
 <p>Thanks again for your generous support! Your contribution will go right back into the balanced coverage and inspiring
  stories you love.</p><p></br><br/>Sincerely, <br/>Rob Risko</p><p>P.S. Having trouble accessing KPCC Plus? Call us at
