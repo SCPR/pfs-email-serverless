@@ -81,7 +81,7 @@ screen. Choose the KPCC Plus stream from the menu, and type this code: ${userObj
 
 function findMembersToEmail(db) {
   const collection = db.collection('PfsUser');
-  collection.find({ emailSent: { $ne: true } }).toArray((err, results) => {
+  collection.find({ emailSent: { $eq: false } }).toArray((err, results) => {
     if (err) {
       console.log(err);
     } else if (results.length) {

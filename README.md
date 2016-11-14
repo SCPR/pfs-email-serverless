@@ -35,6 +35,12 @@ Most of the changes you'll need to make such as copy changes or code changes wil
 
 to deploy those changes to AWS lambda, which is where the function will run when you do `serverless invoke...`
 
+When you are sure everything is working, deploy it to prod with:
+
+`serverless deploy -s prod`
+
+The prod version will use real users' email addresses and mark them as `emailSent = true` once an email is sent.
+
 ## Debugging
 
 To quickly view the logs without having to play the 'click all links' game in the AWS console, you can run:
