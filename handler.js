@@ -46,7 +46,12 @@ function driveTimePromise(db) {
 }
 
 function sendIndividualEmail(userObject, callback) {
-  const emailBody = `Dear ${userObject.firstName}, <br/><p>Congratulations! You can now stream KPCC on your computer 
+  let name = userObject.firstName || userObject.name
+  if (!name) {
+    name = '';
+  }
+
+  const emailBody = `Dear ${name}, <br/><p>Congratulations! You can now stream KPCC on your computer 
 or mobile device during our member drives - without any fundraising interruptions.</p><p>The fundraising-free stream 
 KPCC Plus is easy to access. Click or paste this link to listen on your desktop or mobile web browser: 
 http://www.scpr.org/listen_live/pledge-free?pledgeToken=${userObject.pledgeToken}</p><p>You can also access 
