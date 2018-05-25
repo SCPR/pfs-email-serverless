@@ -51,16 +51,31 @@ function sendIndividualEmail(userObject, callback) {
     name = '';
   }
 
-  const emailBody = `Dear ${name}, <br/><p>Congratulations! You can now stream KPCC on your computer 
-or mobile device during our member drives - without any fundraising interruptions.</p><p>The fundraising-free stream 
-KPCC Plus is easy to access. Click or paste this link to listen on your desktop or mobile web browser: 
-http://www.scpr.org/listen_live/pledge-free?pledgeToken=${userObject.pledgeToken}</p><p>You can also access 
-KPCC Plus directly through our iPhone and Android Apps. Make sure that you have downloaded the most recent update 
-for your KPCC App. Launch the app, and tap on KPCC Live in the orange navbar at the top of the 
-screen. Choose the KPCC Plus stream from the menu, and type this code: ${userObject.pledgeToken}</p>
-<p>Thanks again for your generous support! Your contribution will go right back into the balanced coverage and inspiring
- stories you love.</p><p></br><br/>Sincerely, <br/>Rob Risko</p><p>P.S. Having trouble accessing KPCC Plus? Call us at
-  626-583-5121 or visit our FAQ page: http://www.kpcc.org/plus</p>`;
+  const emailBody = `Dear ${name},<br />
+<p>Congratulations! You can now stream KPCC on your computer or mobile device 
+during our member drives - without any fundraising interruptions.</p>
+<p>The fundraising-free stream KPCC Plus is easy to access. Click or paste this link to listen on your 
+desktop or mobile web browser:<br />
+http://www.scpr.org/listen_live/pledge-free?pledgeToken=${userObject.pledgeToken}<br /></p>
+<p>
+To access KPCC Plus via the Android app, tap the antenna icon in the orange navigation bar at the top of the screen.
+Choose the "KPCC Plus" stream, and type in ${userObject.pledgeToken}
+</p>
+<p>
+To access KPCC Plus on your iPhone or iPad using our iOS app, tap the Settings button (with the gear icon) on 
+the top-right corner of the screen. Choose the "KPCC Standard" option under the Live Stream section, and type 
+in ${userObject.pledgeToken}
+</p>
+<p>
+Thanks again for your generous support! Your contribution will go right back into the balanced coverage and inspiring stories you love.
+</p>
+<p>
+Sincerely,<br />
+Rob Risko
+</p>
+<p>
+P.S. Having trouble accessing KPCC Plus? Call us at 626-583-5121 or visit our FAQ page: http://www.kpcc.org/plus
+</p>`
 
   const email = prod ? userObject.email : 'louise.yang@scpr.org';
   mailClient.sendEmail({
